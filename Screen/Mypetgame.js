@@ -1,13 +1,29 @@
 import { StyleSheet, Text, View, SafeAreaView, Image, TouchableOpacity, TouchableWithoutFeedback, ImageBackground } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { colors, fonts, getData, windowWidth } from '../utils'
+import { colors, fonts, getData, urlAPI, windowWidth } from '../utils'
 import MyHeader from './MyHeader'
 import 'intl';
 import 'intl/locale-data/jsonp/en';
+import axios from 'axios';
 import { Icon } from 'react-native-elements';
 export default function ({ navigation, route }) {
 
-    const MyPET = ({ img, nilai = 0, select = false, onPress }) => {
+
+    const [kunci, setKunci] = useState({
+        a: true,
+        b: false,
+        c: false,
+        d: false,
+        e: false,
+        f: false,
+        g: false,
+        h: false,
+        i: false
+    })
+
+
+
+    const MyPET = ({ img, nilai = 0, select = false, onPress, pass }) => {
         return (
             <TouchableWithoutFeedback onPress={onPress}>
                 <View style={{
@@ -24,7 +40,8 @@ export default function ({ navigation, route }) {
                         fontFamily: fonts.secondary[600],
                         color: colors.black
                     }}>{new Intl.NumberFormat().format(nilai)}</Text> */}
-                    <View style={{
+
+                    {!pass && <View style={{
                         position: 'absolute',
                         bottom: -10,
                         left: -10,
@@ -34,7 +51,8 @@ export default function ({ navigation, route }) {
                             height: 50,
                             resizeMode: 'contain'
                         }} />
-                    </View>
+                    </View>}
+
                 </View>
             </TouchableWithoutFeedback>
 
@@ -53,10 +71,56 @@ export default function ({ navigation, route }) {
                 justifyContent: 'space-around'
             }}>
 
-                <MyPET img={require('../h1.png')} nilai={100000} onPress={() => navigation.navigate('Mypettarget', {
-                    gambar: require('../h1.png')
-                })} />
-                <MyPET img={require('../h2.png')} nilai={300000} />
+                <MyPET pass={kunci.a} img={require('../h1.png')} nilai={100000} onPress={() =>
+
+
+                    getData('user').then(u => {
+                        axios.post(urlAPI + 'cek_wallet.php', {
+                            id: u.id,
+                        }).then(res => {
+                            console.log('cekwalet', res.data);
+
+                            if (res.data.saldo > res.data.target) {
+                                navigation.navigate('Mypettarget', {
+                                    gambar: require('../h1.png')
+                                })
+                            } else if (res.data.target == 0) {
+                                navigation.navigate('Mypettarget', {
+                                    gambar: require('../h1.png')
+                                })
+                            } else {
+                                navigation.navigate('Mypetpilih')
+                            }
+                        })
+                    })
+
+
+
+
+                } />
+                <MyPET img={require('../h2.png')} nilai={300000} onPress={() =>
+
+
+                    getData('user').then(u => {
+                        axios.post(urlAPI + 'cek_wallet.php', {
+                            id: u.id,
+                        }).then(res => {
+                            console.log('cekwalet', res.data);
+
+                            if (res.data.target == 0) {
+                                navigation.navigate('Mypettarget', {
+                                    gambar: require('../h1.png')
+                                })
+                            } else {
+                                navigation.navigate('Mypetpilih')
+                            }
+                        })
+                    })
+
+
+
+
+                } />
                 <MyPET img={require('../h3.png')} nilai={500000} />
             </View>
             <View style={{

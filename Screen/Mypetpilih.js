@@ -73,14 +73,26 @@ export default function ({ navigation, route }) {
 
             {gambar == 4 &&
                 <TouchableWithoutFeedback onPress={() => {
-                    setGambar(5);
+                    // setGambar(5);
 
-                    axios.post(urlAPI + 'saldo_add.php', {
-                        id: user.id
+                    axios.post(urlAPI + 'cek_wallet.php', {
+                        id: user.id,
                     }).then(res => {
-                        navigation.replace('Home');
-                        Alert.alert('BSI Junior', 'Selamat anda berhasil menabung sebesar Rp. 15.000');
+                        console.log('cekwalet', res.data);
+
+                        if (res.data.wallet < 15000) {
+                            Alert.alert('BIS Junior', 'Maaf E - Wallet kamu tidak cukup untuk menabung')
+                        } else {
+                            axios.post(urlAPI + 'saldo_add.php', {
+                                id: user.id
+                            }).then(res => {
+                                navigation.replace('Home');
+                                Alert.alert('BSI Junior', 'Selamat anda berhasil menabung sebesar Rp. 15.000');
+                            })
+                        }
                     })
+
+
                 }}>
                     <View style={{
                         flex: 1,

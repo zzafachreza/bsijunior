@@ -52,7 +52,7 @@ export default function Quran({ navigation }) {
             <MyHeader />
             <WebView onNavigationStateChange={onNavigationStateChange.bind(this)}
                 ref={WEBVIEW_REF}
-                source={{ uri: 'https://m.youtube.com/c/BankSyariahIndonesia/featured' }} />
+                source={{ uri: 'https://m.youtube.com/c/NussaOfficialSeries/featured' }} />
 
         </View>
     )
